@@ -14,7 +14,8 @@ int main(void)
 
 	/* ---------------- LOGGING ---------------- */
 
-	logger = iniciar_logger();
+	logger = log_create("tp0.log", "puto", true, LOG_LEVEL_INFO);
+	log_info(logger, "Hola! Soy un log");
 
 	// Usando el logger creado previamente
 	// Escribi: "Hola! Soy un log"
@@ -22,7 +23,16 @@ int main(void)
 
 	/* ---------------- ARCHIVOS DE CONFIGURACION ---------------- */
 
-	config = iniciar_config();
+	config = config_create("/home/utnso/tp0/client/tp0.config");
+	ip = config_get_string_value(config, "IP");
+	puerto = config_get_string_value(config, "PUERTO");
+	valor = config_get_string_value(config, "VALOR");
+
+	log_info(logger, ip);
+	log_info(logger, puerto);
+	log_info(logger, valor);
+
+
 
 	// Usando el config creado previamente, leemos los valores del config y los 
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
@@ -33,6 +43,7 @@ int main(void)
 	/* ---------------- LEER DE CONSOLA ---------------- */
 
 	leer_consola(logger);
+	log_destroy(logger);
 
 	/*---------------------------------------------------PARTE 3-------------------------------------------------------------*/
 
@@ -72,12 +83,15 @@ void leer_consola(t_log* logger)
 
 	// La primera te la dejo de yapa
 	leido = readline("> ");
-
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
 
-
+	while(leido[0] != '\0')
+	{
+		log_info(logger, leido);
+		free(leido);
+		leido = readline("> ");
+	}
 	// ¡No te olvides de liberar las lineas antes de regresar!
-
 }
 
 void paquete(int conexion)
